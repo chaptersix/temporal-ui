@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
+  import { goto } from '$app/navigation';
   import { page } from '$app/state';
 
   import SchedulesCount from '$lib/components/schedule/schedules-count.svelte';
@@ -15,6 +16,7 @@
   import PaginatedTable from '$lib/holocene/table/paginated-table/api-paginated.svelte';
   import Tooltip from '$lib/holocene/tooltip.svelte';
   import { translate } from '$lib/i18n/translate';
+  import { exportAllToJsonl } from '$lib/services/duckalitics-export';
   import { fetchPaginatedSchedules } from '$lib/services/schedule-service';
   import {
     availableScheduleColumns,
@@ -30,12 +32,16 @@
   } from '$lib/stores/search-attributes';
   import { toListWorkflowFilters } from '$lib/utilities/query/to-list-workflow-filters';
   import type { APIErrorResponse } from '$lib/utilities/request-from-api';
-  import { routeForScheduleCreate } from '$lib/utilities/route-for';
+  import {
+    routeForDuckalitics,
+    routeForScheduleCreate,
+  } from '$lib/utilities/route-for';
   import { writeActionsAreAllowed } from '$lib/utilities/write-actions-are-allowed';
 
   const coreUser = coreUserStore();
   let customizationDrawerOpen = $state(false);
   let error = $state('');
+  let duckExporting = $state(false);
 
   const openCustomizationDrawer = () => {
     customizationDrawerOpen = true;
@@ -61,6 +67,17 @@
       );
     }
   });
+
+  const handleDuckExport = async () => {
+    duckExporting = true;
+    try {
+      const fetchFn = await fetchPaginatedSchedules(namespace, query, onError);
+      await exportAllToJsonl(fetchFn, 'schedules', namespace);
+      goto(routeForDuckalitics());
+    } finally {
+      duckExporting = false;
+    }
+  };
 
   const onError = (err: unknown) => {
     error =
@@ -151,6 +168,17 @@
       {/if}
     </svelte:fragment>
     <svelte:fragment slot="actions-end-additional">
+      <Tooltip text={translate('duckalitics.export-to-duckalitics')} top>
+        <Button
+          on:click={handleDuckExport}
+          data-testid="duck-export-button-schedules"
+          size="xs"
+          variant="ghost"
+          disabled={duckExporting}
+        >
+          <Icon name="duck" />
+        </Button>
+      </Tooltip>
       <Tooltip text="Configure Columns" top>
         <Button
           on:click={openCustomizationDrawer}

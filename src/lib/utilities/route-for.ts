@@ -94,6 +94,10 @@ export const routeForNexus = (): ResolvedPathname => {
   return withPrefix('/nexus', {});
 };
 
+export const routeForDuckalitics = (): ResolvedPathname => {
+  return withPrefix('/duckalitics', {});
+};
+
 export const routeForCommonErrors = (): ResolvedPathname => {
   return withPrefix('/common-errors', {});
 };

@@ -45,6 +45,7 @@ import dollarBadge from './svg/dollar-badge.svelte';
 import dollarInvoice from './svg/dollar-invoice.svelte';
 import download from './svg/download.svelte';
 import drained from './svg/drained.svelte';
+import duck from './svg/duck.svelte';
 import error from './svg/error.svelte';
 import exclamationOctagon from './svg/exclamation-octagon.svelte';
 import exit from './svg/exit.svelte';
@@ -202,6 +203,7 @@ export const icons = {
   'dollar-badge': dollarBadge,
   'dollar-invoice': dollarInvoice,
   drained,
+  duck,
   error,
   'exclamation-octagon': exclamationOctagon,
   exit,

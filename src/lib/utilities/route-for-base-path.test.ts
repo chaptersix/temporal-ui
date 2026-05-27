@@ -12,6 +12,7 @@ import {
   routeForBatchOperations,
   routeForCallStack,
   routeForCommonErrors,
+  routeForDuckalitics,
   routeForEventHistory,
   routeForEventHistoryEvent,
   routeForEventHistoryImport,
@@ -78,6 +79,7 @@ describe('routeFor functions should resolve the base path exactly once', () => {
   const cases: [string, () => string | undefined][] = [
     ['routeForNamespaces', () => routeForNamespaces()],
     ['routeForNexus', () => routeForNexus()],
+    ['routeForDuckalitics', () => routeForDuckalitics()],
     ['routeForNexusEndpoint', () => routeForNexusEndpoint('ep-1')],
     ['routeForNexusEndpointEdit', () => routeForNexusEndpointEdit('ep-1')],
     ['routeForNexusEndpointCreate', () => routeForNexusEndpointCreate()],
