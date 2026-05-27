@@ -128,19 +128,18 @@ export const getHeightTheme = ({
     },
   });
 
-export const highlightStyles = HighlightStyle.define(
-  [
-    { tag: tags.punctuation, color: css('--color-text-primary') },
-    { tag: tags.string, color: css('--color-text-primary') },
-    { tag: tags.propertyName, color: css('--color-text-brand') },
-    { tag: tags.bool, color: css('--color-text-primary') },
-    { tag: tags.number, color: css('--color-text-primary') },
-    { tag: tags.operator, color: css('--color-text-pink') },
-    { tag: tags.comment, color: css('--color-text-subtle') },
-    { tag: tags.variableName, color: css('--color-text-pink') },
-  ],
-  { themeType: 'light' },
-);
+export const highlightStyles = HighlightStyle.define([
+  { tag: tags.keyword, color: css('--color-text-brand'), fontWeight: 'bold' },
+  { tag: tags.punctuation, color: css('--color-text-primary') },
+  { tag: tags.string, color: css('--color-text-success') },
+  { tag: tags.propertyName, color: css('--color-text-brand') },
+  { tag: tags.bool, color: css('--color-text-primary') },
+  { tag: tags.number, color: css('--color-text-warning') },
+  { tag: tags.operator, color: css('--color-text-pink') },
+  { tag: tags.comment, color: css('--color-text-subtle'), fontStyle: 'italic' },
+  { tag: tags.variableName, color: css('--color-text-pink') },
+  { tag: tags.typeName, color: css('--color-text-warning') },
+]);
 
 class LineBreakWidget extends WidgetType {
   toDOM() {

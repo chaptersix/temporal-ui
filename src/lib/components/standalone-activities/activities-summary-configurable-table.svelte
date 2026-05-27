@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { page } from '$app/state';
 
   import Button from '$lib/holocene/button.svelte';
@@ -6,9 +7,11 @@
   import PaginatedTable from '$lib/holocene/table/paginated-table/api-paginated.svelte';
   import Tooltip from '$lib/holocene/tooltip.svelte';
   import { translate } from '$lib/i18n/translate';
+  import { exportAllToJsonl } from '$lib/services/duckalitics-export';
   import { fetchPaginatedActivities } from '$lib/services/standalone-activities';
   import { activityCount, activityRefresh } from '$lib/stores/activities';
   import { configurableTableColumns } from '$lib/stores/configurable-table-columns';
+  import { routeForDuckalitics } from '$lib/utilities/route-for';
 
   import TableBodyCell from './activities-summary-configurable-table/table-body-cell.svelte';
   import TableEmptyState from './activities-summary-configurable-table/table-empty-state.svelte';
@@ -29,6 +32,19 @@
   const query = $derived(page.url.searchParams.get('query') ?? '');
 
   const onFetch = $derived(() => fetchPaginatedActivities(namespace, query));
+
+  let duckExporting = $state(false);
+
+  const handleDuckExport = async () => {
+    duckExporting = true;
+    try {
+      const fetchFn = await fetchPaginatedActivities(namespace, query);
+      await exportAllToJsonl(fetchFn, 'activities', namespace);
+      goto(routeForDuckalitics());
+    } finally {
+      duckExporting = false;
+    }
+  };
 </script>
 
 {#key [namespace, query, $activityRefresh]}
@@ -63,6 +79,17 @@
       <TableEmptyState />
     </svelte:fragment>
     <svelte:fragment slot="actions-end-additional">
+      <Tooltip text={translate('duckalitics.export-to-duckalitics')} top>
+        <Button
+          on:click={handleDuckExport}
+          data-testid="duck-export-button-activities"
+          size="xs"
+          variant="ghost"
+          disabled={duckExporting}
+        >
+          <Icon name="duck" />
+        </Button>
+      </Tooltip>
       <Tooltip text="Configure Columns" top>
         <Button
           on:click={onClickConfigure}

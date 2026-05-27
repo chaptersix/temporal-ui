@@ -3,6 +3,7 @@
 
   import { getContext, type Snippet } from 'svelte';
 
+  import { goto } from '$app/navigation';
   import { page } from '$app/state';
 
   import TableEmptyState from '$lib/components/workflow/workflows-summary-configurable-table/table-empty-state.svelte';
@@ -16,6 +17,7 @@
     BATCH_OPERATION_CONTEXT,
     type BatchOperationContext,
   } from '$lib/pages/workflows-with-new-search.svelte';
+  import { exportAllToJsonl } from '$lib/services/duckalitics-export';
   import {
     fetchAllChildWorkflows,
     fetchPaginatedWorkflows,
@@ -26,6 +28,7 @@
   import { refresh, workflowCount } from '$lib/stores/workflows';
   import type { WorkflowExecution } from '$lib/types/workflows';
   import { exportWorkflows } from '$lib/utilities/export-workflows';
+  import { routeForDuckalitics } from '$lib/utilities/route-for';
 
   import TableBodyCell from './workflows-summary-configurable-table/table-body-cell.svelte';
   import TableHeaderCell from './workflows-summary-configurable-table/table-header-cell.svelte';
@@ -112,6 +115,19 @@
   };
 
   const onFetch = $derived(() => fetchPaginatedWorkflows(namespace, query));
+
+  let duckExporting = $state(false);
+
+  const handleDuckExport = async () => {
+    duckExporting = true;
+    try {
+      const fetchFn = await fetchPaginatedWorkflows(namespace, query);
+      await exportAllToJsonl(fetchFn, 'workflows', namespace);
+      goto(routeForDuckalitics());
+    } finally {
+      duckExporting = false;
+    }
+  };
 
   const dense = $derived($tableDensity === 'dense');
 
@@ -306,6 +322,17 @@
           variant="ghost"
         >
           <Icon name="download" />
+        </Button>
+      </Tooltip>
+      <Tooltip text={translate('duckalitics.export-to-duckalitics')} top>
+        <Button
+          on:click={handleDuckExport}
+          data-testid="duck-export-button"
+          size="xs"
+          variant="ghost"
+          disabled={duckExporting}
+        >
+          <Icon name="duck" />
         </Button>
       </Tooltip>
       <Tooltip text="Configure Columns" top>

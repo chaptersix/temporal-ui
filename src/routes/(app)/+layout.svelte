@@ -29,6 +29,7 @@
   import {
     routeForArchivalWorkflows,
     routeForBatchOperations,
+    routeForDuckalitics,
     routeForEventHistoryImport,
     routeForLoginPage,
     routeForNamespaces,
@@ -85,6 +86,7 @@
       archivalRoute: routeForArchivalWorkflows({ namespace }),
       namespacesRoute: routeForNamespaces(),
       nexusRoute: routeForNexus(),
+      duckaliticsRoute: routeForDuckalitics(),
       historyImportRoute: routeForEventHistoryImport(),
     };
   };
@@ -100,6 +102,7 @@
       archivalRoute,
       namespacesRoute,
       nexusRoute,
+      duckaliticsRoute,
     }: {
       workflowsRoute: string;
       standaloneActivitiesRoute: string;
@@ -110,6 +113,7 @@
       archivalRoute: string;
       namespacesRoute: string;
       nexusRoute: string;
+      duckaliticsRoute: string;
       historyImportRoute: string;
     },
     inProgressBatch: boolean,
@@ -173,6 +177,12 @@
           const match = path.split('/').find((segment) => segment === 'nexus');
           return !!match;
         },
+      },
+      {
+        href: duckaliticsRoute,
+        icon: 'duck',
+        label: translate('duckalitics.duckalitics'),
+        isActive: (path) => path.includes('/duckalitics'),
       },
     ];
   };

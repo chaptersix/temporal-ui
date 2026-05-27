@@ -126,7 +126,7 @@ func generateNonce() string {
 // Generate CSP header
 func generateCSP(nonce string) string {
 	return fmt.Sprintf(
-		"base-uri 'self'; default-src 'none'; style-src 'nonce-%s'; script-src 'nonce-%s'; frame-ancestors 'self'; form-action 'none'; sandbox allow-same-origin allow-popups allow-popups-to-escape-sandbox;",
+		"base-uri 'self'; default-src 'none'; style-src 'nonce-%s'; script-src 'nonce-%s' 'wasm-unsafe-eval'; frame-ancestors 'self'; form-action 'none'; sandbox allow-same-origin allow-popups allow-popups-to-escape-sandbox;",
 		nonce,
 		nonce,
 	)
